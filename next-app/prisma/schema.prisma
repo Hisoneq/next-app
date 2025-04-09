@@ -11,11 +11,20 @@ model User {
     id Int @id @default(autoincrement())
 
     fullName String
-    email    String
+    email    String   @unique
     password String
+    role     UserRole @default(USER)
+
+    provider   String? //Gmail or github connectd to User
+    providerId String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    cart             Cart? //User может не иметь cart
+    orders           Order[] //One user can have many orders
+    verificationCode VerificationCode? //One user one verif code (one to one)
+    cartId           Int
 }
 
 model Product {
@@ -26,4 +35,131 @@ model Product {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    ingredients Ingredient[] //Many products to many ingredientov
+    items       ProductItem[] //One product can have many variations
+
+    category   Category @relation(fields: [categoryId], references: [id]) //One Category to many Products
+    categoryId Int
+}
+
+model Category {
+    id Int @id @default(autoincrement())
+
+    name String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    products Product[]
+}
+
+model Ingredient {
+    id Int @id @default(autoincrement())
+
+    name     String
+    price    Int
+    imageUrl String
+
+    products  Product[]
+    cartItems CartItem[] // One ingred have many cart items (many to many)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model ProductItem {
+    id Int @id @default(autoincrement())
+
+    price     Int
+    size      Int?
+    pizzaType Int?
+
+    product   Product @relation(fields: [productId], references: [id]) //One variation - one product
+    productId Int
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    cartItems CartItem[]
+}
+
+model Cart {
+    id Int @id @default(autoincrement())
+
+    user   User? @relation(fields: [userId], references: [id]) //One user - one cart
+    userId Int?  @unique
+
+    token String //Не авторизованный пользователь может пользоваться корзиной, токен привязывается 
+
+    totalCost Int @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    items CartItem[] // One cart - many cartItems
+}
+
+model CartItem {
+    id Int @id @default(autoincrement())
+
+    productItem   ProductItem @relation(fields: [productItemId], references: [id])
+    productItemId Int
+
+    cart   Cart @relation(fields: [cartId], references: [id]) // CartItem have ony one cart
+    cartId Int
+
+    quantity Int
+
+    ingredients Ingredient[] //One cartItems have many ibgredients
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Order {
+    id Int @id @default(autoincrement())
+
+    user   User? @relation(fields: [userId], references: [id])
+    userId Int?
+
+    token String //for unAuth people 
+
+    totalCost Int
+    status    OrderStatus
+    paymentId String?
+
+    items Json
+
+    fullName String //Если заказываешь не себе а рандому нужно заполнить его данные чтобы курьер связывался с получателем
+    address  String
+    email    String
+    phone    String
+    comment  String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+//Snachala sozdaem User potom generim verif code 
+model VerificationCode {
+    id Int @id @default(autoincrement())
+
+    user   User @relation(fields: [userId], references: [id])
+    userId Int  @unique
+
+    code String
+
+    createdAt DateTime @default(now())
+}
+
+enum OrderStatus {
+    PENDING
+    SUCCEEDED
+    CANCELLED
+}
+
+enum UserRole {
+    USER
+    ADMIN
 }
