@@ -14,6 +14,7 @@ model User {
     email    String   @unique
     password String
     role     UserRole @default(USER)
+    verified DateTime
 
     provider   String? //Gmail or github connectd to User
     providerId String?
@@ -24,7 +25,6 @@ model User {
     cart             Cart? //User может не иметь cart
     orders           Order[] //One user can have many orders
     verificationCode VerificationCode? //One user one verif code (one to one)
-    cartId           Int
 }
 
 model Product {
