@@ -134,6 +134,32 @@ async function up() {
           generateProductItem({ productId: 17 }),
         ],
       });
+
+      await prisma.cart.createMany({
+        data: [
+          {
+            userId: 1,
+            token: '111111',
+            totalCost: 0,
+          },
+          {
+            userId: 2,
+            token: '222222',
+            totalCost: 0,
+          },
+        ]
+      })
+
+      await prisma.cartItem.create({
+        data: {
+          productItemId: 1,
+          cartId: 1,
+          quantity: 2,
+          ingredients: {
+            connect: [{id: 1}, {id:2}, {id:3}, {id:4}]
+          }
+        }
+      })
 }   
 
 //delete(with cash from sql) data to up it again in future
