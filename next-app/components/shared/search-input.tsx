@@ -18,11 +18,17 @@ export const SearchInput: React.FC<Props> = ({className}) => {
     const [searchValue, setSearchValue] = useState('')
     const [products, setProducts] = useState<Product[]>([]);
 
-    useDebounce(() => {
-        Api.products.search(searchValue).then(items => setProducts(items))
-    }, 
-    250,
-    [searchValue]);
+    useDebounce(
+        async () => {
+            try{
+                Api.products.search(searchValue).then(items => setProducts(items))
+            } catch(e) {
+                console.error(e);
+            }
+        }, 
+        250,
+        [searchValue]
+    );
 
     return(
         <>
@@ -47,7 +53,7 @@ export const SearchInput: React.FC<Props> = ({className}) => {
                     focus && 'visible opacity-100 top-12')}>
                     {
                         products.map(product => (
-                            <Link href={`/products/${product.id}`} key={product.id} className="flex items-center gap-3 px-3 py-2 hover:bg-primary/10">
+                            <Link href={`/product/${product.id}`} key={product.id} className="flex items-center gap-3 px-3 py-2 hover:bg-primary/10">
                                 <img src={product.imageUrl} alt={product.name} className="rounded-sm h-8 w-8"/>
                                 <span>{product.name}</span>
                             </Link>
