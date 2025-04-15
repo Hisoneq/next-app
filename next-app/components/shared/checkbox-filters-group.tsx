@@ -11,12 +11,14 @@ interface Props{
     className?: string;
     title: string;
     items: Item[];
-    defaultItems: Item[]; 
+    defaultItems?: Item[]; 
     limit?: number;
     loading?: boolean;
     searchInputPlacehoolder?: string;
-    onChange?: (values: string[]) => void;
+    OnClickCheckbox?: (id: string) => void;
     defaultValue?: string[];
+    selectedIds?: Set<string>; 
+    name?: string;
 }
 
 export const CheckboxFiltersGroup: React.FC<Props> = ({ 
@@ -27,7 +29,9 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
     searchInputPlacehoolder= "Найти... ",
     className,
     loading,
-    onChange,
+    OnClickCheckbox,
+    selectedIds,
+    name,
     defaultValue,
  }) => {
 
@@ -37,7 +41,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
 
     const list = showAll 
     ? items.filter((item) => item.text.toLowerCase().includes(searchValue.toLowerCase())) 
-    : defaultItems?.slice(0, limit);
+    : (defaultItems || items)?.slice(0, limit);
 
     const onChangeInput = (value: string) => {
         setSearchValue(value)
@@ -71,8 +75,9 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
                 {
                     list.map((item, index ) => (
                         <FilterCheckbox 
-                        onCheckedChange={(i) => console.log(i)}
-                        checked = {false}
+                        name={name}
+                        onCheckedChange={() => OnClickCheckbox?.(item.value)}
+                        checked = {selectedIds?.has(item.value)}
                         key={String(item.value)}
                         value={item.value}
                         text={item.text}
