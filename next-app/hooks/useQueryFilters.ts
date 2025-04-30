@@ -1,4 +1,4 @@
-import { Filters, useFilters } from "./useFilters";
+import { Filters } from "./useFilters";
 import { useEffect } from "react";
 import qs from "qs";
 import { useRouter } from "next/navigation";

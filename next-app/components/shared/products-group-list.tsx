@@ -2,7 +2,7 @@
 
 import React, { useEffect, useInsertionEffect, useRef } from "react";
 import { Title } from "./title";
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import { ProductCart } from "./product-cart";
 import useIntersection from "@/hooks/useIntersection";
 import { useCategoryStore } from "@/app/store/category";
@@ -33,7 +33,7 @@ export const ProductsGroupList: React.FC<Props> = ({
         if(intersection?.isIntersecting) {
             setActiveCategoryId(categoryId)
         }
-    }, [intersection?.isIntersecting])
+    }, [categoryId, intersection?.isIntersecting, setActiveCategoryId])
     
     return (
         <div className={className} id={title} ref={intersectionRef}>

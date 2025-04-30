@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import React from "react";
 import { Title } from "./title";
 import { Input } from "../ui/input";

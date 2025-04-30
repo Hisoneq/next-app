@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import { Api } from "@/services/api-client";
 import { Product } from "@prisma/client";
 import { Search } from "lucide-react";
